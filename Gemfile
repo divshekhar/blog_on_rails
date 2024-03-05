@@ -39,3 +39,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "tailwindcss-rails", "~> 2.0"
 
 gem "grape", "~> 2.0"
+
+gem "sidekiq", "<7"
+
+gem "redis", "~> 5.1"

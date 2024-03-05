@@ -1,24 +1,23 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe 'Articles API', type: :request do
   # Initialize the test data
   let!(:articles) do
-    create_list(:article, 10)
+    create_list(:article, 10, :with_user)
   end
   let(:article_id) { articles.first.id }
 
   describe 'GET /articles' do
     # Make a request before each example
     before :each do
-      # puts articles.pluck(:id).to_s
-      # puts Article.pluck(:id).to_s
       get '/api/articles'
     end
 
     it 'returns articles' do
       expect(JSON.parse(response.body)).not_to be_empty
       expect(JSON.parse(response.body).size).to eq(10)
-      expect(JSON.parse(response.body).map {|x| x['author']}).to match_array(Article.pluck(:author))
+      expect(JSON.parse(response.body).map {|x| x['user_id']}).to match_array(Article.pluck(:user_id))
     end
 
     it 'returns status code 200' do
@@ -69,16 +68,18 @@ RSpec.describe 'Articles API', type: :request do
   end
 
   describe 'PUT /articles/:id/author' do
-    let!(:article) { create(:article) }
+    before :each do
+      @article = create(:article)
+    end
 
     it 'updates the author of an article' do
-      put "/api/articles/#{article.id}/author", params: { author: 'New Author' }
+      put "/api/articles/#{@article.id}/author", params: { user_id: 1 }
       expect(response).to have_http_status(200)
-      expect(article.reload.author).to eq('New Author')
+      expect(@article.reload.user_id).to eq(1)
     end
 
     it 'returns an error if the article is not found' do
-      put '/api/articles/999/author', params: { author: 'New Author' }
+      put '/api/articles/999/author', params: { user_id: 1 }
       expect(response).to have_http_status(404)
     end
   end
