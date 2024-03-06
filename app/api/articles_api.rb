@@ -1,4 +1,3 @@
-# app/api/articles_api.rb
 module API
   class Articles < Grape::API
     version 'v1', using: :header, vendor: 'api'
@@ -8,7 +7,8 @@ module API
     resource :articles do
       desc 'Return all articles'
       get do
-        Article.all
+        articles = Article.all
+        present articles, with: ArticleEntity
       end
 
       desc 'Return a specific article'
@@ -45,9 +45,13 @@ module API
       desc 'Delete an article'
       params do
         requires :id, type: Integer, desc: 'Article ID'
+        requires :user_id, type: Integer, desc: 'User ID'
       end
       delete ':id' do
         article = Article.find_by(id: params[:id])
+        if article.user_id != user_id do
+          error!({ message: 'Unauthorized access in delete'}, 400)
+        end
         if article
           article.destroy
           status 204
@@ -73,7 +77,6 @@ module API
         requires :user_id, type: String, desc: 'New author id'
       end
       put ':id/author' do
-        byebug
         article = Article.find_by(id: params[:id])
         if article
           article.update(user_id: params[:user_id])
