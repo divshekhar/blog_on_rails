@@ -15,7 +15,7 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   require 'rails_helper'
-  require_relative '../app/api/articles_api.rb'
+  require_relative '../app/controllers/api/articles.rb'
   config.before(:each) do
     Sidekiq::Testing.fake!
   end

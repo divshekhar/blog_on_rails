@@ -1,4 +1,4 @@
-module API
+module Api
   class Users < Grape::API
     version 'v1', using: :header, vendor: 'api'
     format :json

@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'sidekiq/testing'
 
-RSpec.describe 'API::Users', type: :request do
+RSpec.describe 'Api::Users', type: :request do
   describe 'GET /api/v1/users' do
     it 'returns all users' do
       create_list(:user, 3)

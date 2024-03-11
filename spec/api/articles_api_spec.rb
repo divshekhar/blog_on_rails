@@ -62,31 +62,41 @@ RSpec.describe 'Articles API', type: :request do
     let!(:article) { create(:article) }
 
     it 'updates the visibility of an article' do
-      put "/api/articles/#{article.id}/visibility", params: { visibility: false }
+      puts article.id
+      put "/api/articles/#{article.id}/visibility", params: { visibility: false, user_id: article.user_id }
       expect(response).to have_http_status(200)
       expect(article.reload.visibility).to eq(false)
     end
 
     it 'returns an error if the article is not found' do
-      put '/api/articles/999/visibility', params: { visibility: false }
+      put '/api/articles/999/visibility', params: { visibility: false, user_id: article.user_id }
       expect(response).to have_http_status(404)
+    end
+
+    it 'returns an error if the user is not authorized' do
+      put "/api/articles/#{article.id}/visibility", params: { visibility: false, user_id: 0 }
+      expect(response).to have_http_status(400)
     end
   end
 
   describe 'PUT /articles/:id/author' do
-    before :each do
-      @article = create(:article)
-    end
+    let!(:article) { create(:article) }
+
 
     it 'updates the author of an article' do
-      put "/api/articles/#{@article.id}/author", params: { user_id: 1 }
+      put "/api/articles/#{article.id}/author", params: { user_id: article.user_id, new_user_id: 2 }
       expect(response).to have_http_status(200)
-      expect(@article.reload.user_id).to eq(@article.user_id)
+      expect(article.reload.user_id).to eq(article.user_id)
     end
 
     it 'returns an error if the article is not found' do
-      put '/api/articles/999/author', params: { user_id: 1 }
+      put '/api/articles/999/author', params: { user_id: article.user_id, new_user_id: 2 }
       expect(response).to have_http_status(404)
+    end
+
+    it 'returns an error if the user is not authorized' do
+      put "/api/articles/#{article.id}/author", params: { user_id: 0, new_user_id: 2 }
+      expect(response).to have_http_status(400)
     end
   end
   end

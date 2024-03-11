@@ -1,0 +1,3 @@
+class ArticleApp
+
+end

@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'sidekiq/testing'
 
 RSpec.describe 'Article Model', type: :model do
-  describe 'is valid' do
-    let!(:article) { create(:article) }
+  let!(:article) { create(:article) }
 
+  describe 'is valid' do
     it "with valid attributes" do
       expect(article).to be_valid
     end
@@ -12,7 +12,7 @@ RSpec.describe 'Article Model', type: :model do
 
   describe 'is not valid' do
     it "without a title" do
-      article = Article.new(title: nil)
+      article = Article.new()
       expect(article).to_not be_valid
     end
 
