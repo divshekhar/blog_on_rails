@@ -630,6 +630,7 @@
           <RakeTaskImpl id="spec">
             <subtasks>
               <RakeTaskImpl description="" fullCommand="spec:api" id="api" />
+              <RakeTaskImpl description="" fullCommand="spec:application" id="application" />
               <RakeTaskImpl description="" fullCommand="spec:jobs" id="jobs" />
               <RakeTaskImpl description="" fullCommand="spec:models" id="models" />
               <RakeTaskImpl description="" fullCommand="spec:prepare" id="prepare" />

@@ -1,10 +1,12 @@
+require_relative '../../../lib/grape/global_errors.rb'
 module Api
   class Articles < Grape::API
     version 'v1', using: :header, vendor: 'api'
     format :json
     prefix :api
 
-    helpers Api::Helpers::Articles
+    # helpers Api::Helpers::Articles
+    include ::Grape::GlobalErrors
 
     resource :articles do
       desc 'Return all articles'
@@ -49,10 +51,13 @@ module Api
           requires :user_id, type: Integer, desc: 'User ID'
         end
         delete ':id' do
-          article = Article.find_by(id: params[:id])
-          check_article(article)
-          check_user(article.user_id, params[:user_id])
-          delete_article article
+          article = Article.find_by!(id: params[:id])
+          article_app = ArticleApp.new(article)
+          article_app.check_article
+          article_app.check_user(params[:user_id])
+          article_app.delete_article
+        rescue => error
+          raise ActiveRecord::RecordNotFound.new error.message
         end
 
         desc 'Change visibility of an article'
